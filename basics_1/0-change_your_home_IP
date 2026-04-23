@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Configures localhost and facebook.com host mappings
+set -euo pipefail
+
+python3 - <<'PY'
+from pathlib import Path
+
+hosts_file = Path("/etc/hosts")
+lines = hosts_file.read_text().splitlines()
+
+updated_lines = []
+facebook_found = False
+
+for line in lines:
+    stripped = line.strip()
+    parts = stripped.split()
+    if parts[:2] == ["127.0.0.1", "localhost"]:
+        updated_lines.append("127.0.0.2 localhost")
+    elif "facebook.com" in parts:
+        updated_lines.append("8.8.8.8 facebook.com")
+        facebook_found = True
+    else:
+        updated_lines.append(line)
+
+if not facebook_found:
+    updated_lines.append("8.8.8.8 facebook.com")
+
+hosts_file.write_text("\n".join(updated_lines) + "\n")
+PY
