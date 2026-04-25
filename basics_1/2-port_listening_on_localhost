@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# This script listens on port 98 of localhost and outputs any received text
+
+PORT=98
+
+# Check if netcat is installed
+if ! command -v nc &> /dev/null; then
+    echo "Error: netcat (nc) is not installed" >&2
+    echo "Install it with: sudo apt-get install netcat (Ubuntu/Debian)" >&2
+    exit 1
+fi
+
+# Listen on port 98 of localhost
+nc -l -s 127.0.0.1 -p "$PORT"
